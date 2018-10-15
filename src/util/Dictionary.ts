@@ -1,6 +1,12 @@
 export class Dictionary {
-
+    private static count:number;
+    private countId = 0;
     private dic: any = {};
+
+    constructor () {
+        Dictionary.count = Dictionary.count || 0;
+        Dictionary.count++;
+    }
 
     setVal(obj: any, val: any) {
         let key: string = this.getKey(obj);
@@ -17,7 +23,7 @@ export class Dictionary {
             if (obj.id) {
                 return obj.id;
             } else {
-                let id: string = "d_" + Math.floor(Math.random() * Math.pow(10, 10));
+                let id: string = "d_" + Dictionary.count + "_" +this.countId++;
                 obj.id = id;
                 return id;
             }

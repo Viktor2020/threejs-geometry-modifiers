@@ -41,7 +41,7 @@ class Main {
     }
 
     public initThree() {
-        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
+        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
         this.camera.position.z = 500;
         this.camera.position.x = 500;
         this.camera.position.y = 150;
@@ -60,6 +60,9 @@ class Main {
         let light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(100, 100, 50);
         this.scene.add(light);
+        light = new THREE.DirectionalLight(0xffffff, 0.3);
+        light.position.set(-100, -100, -50);
+        this.scene.add(light);
     }
 
     public initControl() {
@@ -70,9 +73,10 @@ class Main {
     public addMesh() {
         //cube
         this.cube = new THREE.Mesh(
-            new THREE.BoxGeometry(200, 200, 200, 12, 12, 12),
+            new THREE.BoxBufferGeometry(200, 800, 200, 12, 12, 12),
             new THREE.MeshLambertMaterial({ color: 0xffffff })
         );
+        this.cube.geometry.translate(100, 400, 100);
         this.cube.position.y = 150;
         this.cube.position.x = 150;
         this.scene.add(this.cube);
@@ -84,7 +88,7 @@ class Main {
         );
         this.plane.position.y = 100;
         this.plane.position.z = 150;
-        this.plane.position.x = -150;
+        // this.plane.position.x = -150;
         //this.plane.rotation.x = - Math.PI / 2;
         this.scene.add(this.plane);
 
@@ -100,14 +104,15 @@ class Main {
 
     public addModifier() {
         this.modifier = new ModifierStack(this.cube);
-        //this.modifier = new ModifierStack(this.plane);
-        
+        // this.modifier = new ModifierStack(this.plane);
+
         //this.modifier.uvsAndColorUpdate = true;
 
         //bend
-        let bend = new Bend(0, 0, 70);
+        let bend = new Bend(0, 0, 0);
+
         bend.constraint = ModConstant.LEFT;
-        //this.modifier.addModifier(bend);
+        this.modifier.addModifier(bend);
 
         //bloat boom
         let bloat = new Bloat();
@@ -147,7 +152,7 @@ class Main {
 
         //taper
         let wheel: Wheel = new Wheel();
-        this.modifier.addModifier(wheel);
+        // this.modifier.addModifier(wheel);
 
         let userDefined: UserDefined = new UserDefined();
         userDefined.renderVector = (vec) => {
@@ -156,31 +161,38 @@ class Main {
         //this.modifier.addModifier(userDefined);
 
         //////////////////  TWEEN  //////////////////
-        TweenMax.to(wheel, 10, {
-            speed: .1,
-            turn: 1
-        });
+        // TweenMax.to(wheel, 10, {
+        //     speed: .1,
+        //     turn: 1
+        // });
+        //
+        // TweenMax.to(twist, 10, {
+        //     angle: 0
+        // });
+        //
+        // TweenMax.to(taper, 10, {
+        //     power: 10,
+        //     frc: 0
+        // });
+        //
 
-        TweenMax.to(twist, 10, {
-            angle: 0
-        });
+        var obj = {
+            force: 1,
+            onComplete: function () {
+                obj.force = obj.force === 0 ? 1 : 0;
+                TweenMax.to(bend, 2, obj);
+            }
+        };
+        TweenMax.to(bend, 2, obj);
 
-        TweenMax.to(taper, 10, {
-            power: 10,
-            frc: 0
-        });
-
-        TweenMax.to(bend, 10, {
-            force: 1
-        });
-
-        TweenMax.to(noise, 10, {
-            frc: 50
-        });
-
-        TweenMax.to(breaks, 10, {
-            angle: 1
-        });
+        //
+        // TweenMax.to(noise, 10, {
+        //     frc: 50
+        // });
+        //
+        // TweenMax.to(breaks, 10, {
+        //     angle: 1
+        // });
     }
 
     public animate() {

@@ -9,6 +9,8 @@ export interface IMesh {
 }
 
 export interface IGeometry {
+    attributes?: any;
+    index?: any;
     vertices: any[];
     faces: any[];
     verticesNeedUpdate: boolean;
