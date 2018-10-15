@@ -5,13 +5,13 @@ import { ThreeMesh } from './plugins/ThreeMesh';
 export class ModifierStack {
 
 	private baseMesh: MeshProxy;
-	private stack: any[];
+	private stack: Array<IModifier>;
 
 	constructor(mesh: any) {
 		this.baseMesh = new ThreeMesh;
 		this.baseMesh.setMesh(mesh);
 		this.baseMesh.analyzeGeometry();
-		this.stack = new Array();
+		this.stack = [];
 	}
 
 	public set uvsAndColorUpdate(update: boolean) {
@@ -35,7 +35,7 @@ export class ModifierStack {
 		this.baseMesh.resetGeometry();
 
 		for (let i: number = 0; i < this.stack.length; i++) {
-			(<IModifier>this.stack[i]).apply();
+			this.stack[i].apply();
 		}
 
 		this.baseMesh.postApply();
